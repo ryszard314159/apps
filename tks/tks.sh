@@ -63,7 +63,7 @@ function help_example () {
   echo "Step by step example:"
   echo
   echo "# create input xml file with experimental data"
-  echo "cp /users/kzth541/apps/tks/data/VT/PA.Levo/PA.Levo.xml . # for the purpose of this example we copy existing file to the current working directory"
+  echo "cp $HOME/apps/tks/data/VT/PA.Levo/PA.Levo.xml . # for the purpose of this example we copy existing file to the current working directory"
   echo "tks -input PA.Levo.xml -m VT2005                         # run parameter fitting for selected model (VT2005 or VT2007); this should take about 3-5 minutes (if cluster is not to busy)"
   echo "head VT2005_Inf_bernoulli.txt                            # take a look at top few lines of file with optimized parameters"
   echo "# the lowest RMSE values should be ~0.67" 

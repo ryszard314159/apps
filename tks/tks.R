@@ -1031,7 +1031,7 @@ opts$verbose <- verbose <- FALSE
 opts$debug <- debug <- FALSE
 opts$device <- device <- 'png'
 opts$report.flag <- report.flag <- 0
-opts$report.template <- report.template <- '/users/kzth541/apps/tks/R/tks.Rnw'
+opts$report.template <- report.template <- '$HOME/apps/tks/R/tks.Rnw'
 opts$cut.RMSE <- cut.RMSE <- NULL
 opts$delta.RMSE <- delta.RMSE <- 0.2
 opts$seed <- seed <- as.integer(runif(1)*1e6)
@@ -1059,7 +1059,7 @@ usage <- function() {
                      -device    : plot file format [png|eps]
                      -report    : (0|1|2) 0: - no report, 1: report only, 2: opt and report uses PREFIX.txt file)
                      -cutRMSE   : factor to use par values with RMSE < cutRMSE [use all values]
-                     -template  : template for Sweave [/users/kzth541/apps/tks/$version/tks.Rnw]
+                     -template  : template for Sweave [$HOME/apps/tks/$version/tks.Rnw]
                      -seed      : for random number generator
                      -user      : user name (default: system $USER)
                      -firstName : first name
