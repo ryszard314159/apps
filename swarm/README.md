@@ -7,6 +7,5 @@ Reaction-based de novo molecular design
 2. Usability improvements (docs, etc.)
 
 ## Authors
-Ryszard Czerminski
-[Ryszard Czerminski](https://github.com/ryszard314159)
-[Barry Wythoff](https://www.linkedin.com/in/barry-wythoff)
+* [Ryszard Czerminski](https://github.com/ryszard314159)
+* [Barry Wythoff](https://www.linkedin.com/in/barry-wythoff)
