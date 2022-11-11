@@ -6,7 +6,7 @@
 version=
 #version=2010.09 # most recent
 #export R_HOME=/usr/contrib/lib64/R
-export TKS=/users/kzth541/apps/tks/$version
+export TKS=${HOME}/apps/tks/$version
 script=$TKS/R/tks.R
 RSCRIPT=/usr/contrib/bin/Rscript
 
@@ -99,7 +99,7 @@ function help_unix () {
 
 function help_version () {
   echo current version=$version
-  echo to change version \(e.g.\) : version=2009.11\; export TKS=/users/kzth541/apps/tks/\$version\; export PATH=\$TKS/bin
+  echo to change version \(e.g.\) : version=2009.11\; export TKS=$HOME/apps/tks/\$version\; export PATH=\$TKS/bin
 }
 
 function update () {
@@ -107,9 +107,9 @@ function update () {
     mkdir -p $TKS/data/models
     mkdir -p $TKS/{bin,R}
   fi
-  cp /users/kzth541/apps/tks/R/tks.{R,Rnw} $TKS/R/
-  cp /users/kzth541/apps/tks/bin/tks.sh $TKS/bin/tks
-  cp /users/kzth541/apps/tks/data/models/*.opt $TKS/data/models
+  cp $HOME/apps/tks/R/tks.{R,Rnw} $TKS/R/
+  cp $HOME/apps/tks/bin/tks.sh $TKS/bin/tks
+  cp $HOME/apps/tks/data/models/*.opt $TKS/data/models
 }
 
 function config ()
