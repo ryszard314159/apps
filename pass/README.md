@@ -12,6 +12,13 @@ custom `pass.js` and `pass.html` files.
 
 See https://nodejs.org
 
+Build self-contained package:
+```
+$ npm install -g pkg
+$ pkg pass.js -o pass
+$ ./pass -h
+```
+
 ## Browser
 
 Open `pass.html` in your browser
