@@ -28,7 +28,7 @@ function print(msg) {
   }
 }
 
-function parse_cmd_line() {
+function get_parser() {
   const { ArgumentParser,  ArgumentDefaultsHelpFormatter} = require('argparse');
   const parser = new ArgumentParser({
     description: 'Seeded password generator - generates password from hint and sekret \
@@ -36,9 +36,8 @@ function parse_cmd_line() {
     formatter_class: ArgumentDefaultsHelpFormatter
   });
   // parser.add_argument('-v', '--version', { action: 'version', version });
-  parser.add_argument('-i', '--hint',
-         { help: "provide non-empty string, otherwise random passwd will be generated  ", default: ''});
-  parser.add_argument('-k', '--sekret', { help: 'hint augmentation', default: '0' });
+  parser.add_argument('hint', {help: "password hint; '' generates random passwd"});
+  parser.add_argument('-k', '--sekret', { help: 'hint augmentation', default: '<SEKRET>' });
   parser.add_argument('-s', '--salt', { help: 'hint augmentation', default: '0,1,2,3,4' });
   parser.add_argument('-L', '--len', { help: 'password length', type: 'int', default: 15});
   parser.add_argument('-u', '--unicode', { help: 'use ALL unicode chars', action: "store_true"});
@@ -168,11 +167,19 @@ function getPass(args) {
   return passwd
 }
 
-if (typeof window === 'undefined') {
-  var parser = parse_cmd_line();
+// if (typeof window === 'undefined') {
+//   var parser = parse_cmd_line();
+// }
+let parser = get_parser();
+let args;
+if (typeof process.env.BUILTIN !== 'undefined' || typeof window !== 'undefined') {
+  // get args from window s
+  print(`DEBUG: env.BUILTIN= ${process.env.BUILTIN}`)
+  args = parser.parse_args([$('#hint').val(), '-v'])
+} else {
+  // get args from command line
+  args = parser.parse_args()
 }
-// const args = parser.parse_args(['--hint', 'aaa'])
-const args = parser.parse_args()
 if (args.debug) console.dir(args);
 var passwd = getPass(args)
 if (args.verbose) {
