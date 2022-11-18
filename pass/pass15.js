@@ -7,6 +7,7 @@ CHARS.lower = 'abcdefghijklmnopqrstuvwxyz'
 CHARS.upper = CHARS.lower.toUpperCase()
 CHARS.punctuation = '!"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~'
 const MP31 = 2**31 - 1 // Mersenne prime
+// import assert from 'assert';s
 const assert = require('assert');
 
 /* permute chars in string using Durstenfeld shuffle algorithm */
@@ -23,7 +24,8 @@ function print(msg) {
   if (typeof window !== 'undefined') {
     document.write(msg + "<br>")
   } else {
-    console.log(msg) }
+    console.log(msg)
+  }
 }
 
 function parse_cmd_line() {
@@ -34,8 +36,10 @@ function parse_cmd_line() {
     formatter_class: ArgumentDefaultsHelpFormatter
   });
   // parser.add_argument('-v', '--version', { action: 'version', version });
-  parser.add_argument('hint', { help: 'required password hint' });
+  parser.add_argument('-i', '--hint',
+         { help: "provide non-empty string, otherwise random passwd will be generated  ", default: ''});
   parser.add_argument('-k', '--sekret', { help: 'hint augmentation', default: '0' });
+  parser.add_argument('-s', '--salt', { help: 'hint augmentation', default: '0,1,2,3,4' });
   parser.add_argument('-L', '--len', { help: 'password length', type: 'int', default: 15});
   parser.add_argument('-u', '--unicode', { help: 'use ALL unicode chars', action: "store_true"});
   parser.add_argument('-r', '--letters', { help: 'use ascii letters', action: "store_true"});
@@ -46,9 +50,9 @@ function parse_cmd_line() {
   parser.add_argument('-a', '--random', { help: 'create random password', action: "store_true"});
   parser.add_argument('-d', '--debug', { help: 'baz bar', action: "store_true"});
   parser.add_argument('-v', '--verbose', { help: 'add output', action: "store_true"});
-  let args =  parser.parse_args()
-  if (args.debug) console.dir(args);
-  return args
+  // let args =  parser.parse_args()
+  // if (args.debug) console.dir(args);
+  return parser
 }
 
 function hash_string(s) {
@@ -112,6 +116,7 @@ function getPass(args) {
   args.letters     : should letters be used?
   args.punctuation : should punctuation be used?
   */
+  
   var charset = ''
   if (!args.unicode) {
     if (args.digits) charset += CHARS.digits
@@ -120,7 +125,7 @@ function getPass(args) {
     if (charset.length == 0) charset = CHARS.digits + CHARS.lower + CHARS.upper
   }
 
-  if (args.random) {
+  if (args.hint === '') { // generate and return random string from charset
     return get_random_string(args.len, charset)
   }
 
@@ -130,14 +135,16 @@ function getPass(args) {
   to satisfy requirements of many sites
   one or more special characters can be provided in args.prefix (default='?')
   */
-  let lower = get_random_string(1, CHARS.lower,  rig(MP31, hint+1))
-  let upper = get_random_string(1, CHARS.upper,  rig(MP31, hint+2))
-  let digit = get_random_string(1, CHARS.digits, rig(MP31, hint+3))
+  var salt = args.salt.split(',')
+  assert(salt.length == 5, 'salt must be 5 chars')
+  let lower = get_random_string(1, CHARS.lower,  rig(MP31, hint+salt[0]))
+  let upper = get_random_string(1, CHARS.upper,  rig(MP31, hint+salt[1]))
+  let digit = get_random_string(1, CHARS.digits, rig(MP31, hint+salt[2]))
   const prefix = args.prefix + lower + upper + digit
-  let passwd = get_random_string(args.len - prefix.length, charset, rig(MP31, hint+4))
+  let passwd = get_random_string(args.len - prefix.length, charset, rig(MP31, hint+salt[3]))
   passwd = prefix + passwd // augment password with prefix e.g. '?aZ9'
   if (!args.no_shuffle) {
-    passwd = shuffle_string(passwd, rig(MP31, hint + args.sekret))
+    passwd = shuffle_string(passwd, rig(MP31, hint+salt[4]))
   }
   if (args.debug) {
     print("DEBUG: getPass: passwd=" + passwd)
@@ -162,11 +169,14 @@ function getPass(args) {
 }
 
 if (typeof window === 'undefined') {
-  var args = parse_cmd_line();
+  var parser = parse_cmd_line();
 }
-const passwd = getPass(args)
+// const args = parser.parse_args(['--hint', 'aaa'])
+const args = parser.parse_args()
+if (args.debug) console.dir(args);
+var passwd = getPass(args)
 if (args.verbose) {
-    print("password >>> " + passwd + " <<< (copied to clipboard)")
+    print(`password >>> ${passwd} <<< (copied to clipboard)`)
 }
 // <script type="text/javascript" src="pass.js"></script>
 
