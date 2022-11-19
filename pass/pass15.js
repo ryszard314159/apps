@@ -1,24 +1,12 @@
 #!/usr/bin/env node
 'use strict';
 
-const CHARS = {}
-CHARS.digits = '0123456789'
-CHARS.lower = 'abcdefghijklmnopqrstuvwxyz'
-CHARS.upper = CHARS.lower.toUpperCase()
-CHARS.punctuation = '!"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~'
+
 const MP31 = 2**31 - 1 // Mersenne prime
-// import assert from 'assert';s
+// import assert from 'assert';
 const assert = require('assert');
 
-/* permute chars in string using Durstenfeld shuffle algorithm */
-function shuffle_string(string, gint=rig(MP31, seed)) {
-  let z = string.split(''), i, j;
-  for (i = z.length - 1; i > 0; i--) {
-      j = gint.next().value % i;
-      [z[i], z[j]] = [z[j], z[i]]
-  }
-  return z.join('')
-}
+
 
 function print(msg) {
   if (typeof window !== 'undefined') {
@@ -52,6 +40,16 @@ function get_parser() {
   // let args =  parser.parse_args()
   // if (args.debug) console.dir(args);
   return parser
+}
+
+/* permute chars in string using Durstenfeld shuffle algorithm */
+function shuffle_string(string, gint=rig(MP31, seed)) {
+  let z = string.split(''), i, j;
+  for (i = z.length - 1; i > 0; i--) {
+      j = gint.next().value % i;
+      [z[i], z[j]] = [z[j], z[i]]
+  }
+  return z.join('')
 }
 
 function hash_string(s) {
@@ -105,6 +103,38 @@ function get_random_string(n, charset='', gint=rig(MP31, '')) { // seed=undefine
   return z
 }
 
+function copy_to_clipboard(x) {
+    if (typeof window === "undefined") {
+      const CLIP = require('clipboardy');
+      CLIP.writeSync(x)
+    } else {
+      /*
+      from: https://www.30secondsofcode.org/js/s/copy-to-clipboard
+      see also: https://github.com/w3c/clipboard-apis/blob/master/explainer.adoc#writing-to-the-clipboard
+      */
+      const copyToClipboard = str => {
+        const el = document.createElement('textarea');
+        el.value = str;
+        el.setAttribute('readonly', '');
+        el.style.position = 'absolute';
+        el.style.left = '-9999px';
+        document.body.appendChild(el);
+        const selected =
+          document.getSelection().rangeCount > 0
+            ? document.getSelection().getRangeAt(0)
+            : false;
+        el.select();
+        document.execCommand('copy');
+        document.body.removeChild(el);
+        if (selected) {
+          document.getSelection().removeAllRanges();
+          document.getSelection().addRange(selected);
+        }
+      };
+      copyToClipboard(x);
+    }
+}
+
 function getPass(args) {
   /*
   args.prefix      : prefix for generated password
@@ -115,7 +145,13 @@ function getPass(args) {
   args.letters     : should letters be used?
   args.punctuation : should punctuation be used?
   */
-  
+
+  const CHARS = {}
+  CHARS.digits = '0123456789'
+  CHARS.lower = 'abcdefghijklmnopqrstuvwxyz'
+  CHARS.upper = CHARS.lower.toUpperCase()
+  CHARS.punctuation = '!"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~'
+
   var charset = ''
   if (!args.unicode) {
     if (args.digits) charset += CHARS.digits
@@ -124,27 +160,58 @@ function getPass(args) {
     if (charset.length == 0) charset = CHARS.digits + CHARS.lower + CHARS.upper
   }
 
+  // let passwd;
   if (args.hint === '') { // generate and return random string from charset
-    return get_random_string(args.len, charset)
+      passwd = get_random_string(args.len, charset)
+  } else {
+      let hint = args.hint + args.sekret
+      /*
+      add to prefix one lower, one upper character and one digit
+      to satisfy requirements of many sites
+      one or more special characters can be provided in args.prefix (default='?')
+      */
+      var salt = args.salt.split(',')
+      assert(salt.length == 5, 'salt must be 5 chars')
+      let lower = get_random_string(1, CHARS.lower,  rig(MP31, hint+salt[0]))
+      let upper = get_random_string(1, CHARS.upper,  rig(MP31, hint+salt[1]))
+      let digit = get_random_string(1, CHARS.digits, rig(MP31, hint+salt[2]))
+      const prefix = args.prefix + lower + upper + digit
+      passwd = get_random_string(args.len - prefix.length, charset, rig(MP31, hint+salt[3]))
+      passwd = prefix + passwd // augment password with prefix e.g. '?aZ9'
+      if (!args.no_shuffle) {
+        passwd = shuffle_string(passwd, rig(MP31, hint+salt[4]))
+      }
   }
+  copy_to_clipboard(passwd)
+  if (args.verbose) {
+    print(`password >>> ${passwd} <<< (copied to clipboard)`)
+  }
+  return passwd
+}
 
-  let hint = args.hint + args.sekret
-  /*
-  add to prefix one lower, one upper character and one digit
-  to satisfy requirements of many sites
-  one or more special characters can be provided in args.prefix (default='?')
-  */
-  var salt = args.salt.split(',')
-  assert(salt.length == 5, 'salt must be 5 chars')
-  let lower = get_random_string(1, CHARS.lower,  rig(MP31, hint+salt[0]))
-  let upper = get_random_string(1, CHARS.upper,  rig(MP31, hint+salt[1]))
-  let digit = get_random_string(1, CHARS.digits, rig(MP31, hint+salt[2]))
-  const prefix = args.prefix + lower + upper + digit
-  let passwd = get_random_string(args.len - prefix.length, charset, rig(MP31, hint+salt[3]))
-  passwd = prefix + passwd // augment password with prefix e.g. '?aZ9'
-  if (!args.no_shuffle) {
-    passwd = shuffle_string(passwd, rig(MP31, hint+salt[4]))
-  }
+let parser = get_parser();
+let args, passwd;
+if (typeof process.env.BUILTIN !== 'undefined' || typeof window !== 'undefined') {
+  // get args from window s
+  print(`DEBUG: env.BUILTIN= ${process.env.BUILTIN}`)
+  args = parser.parse_args([$('#hint').val(), '-v'])
+} else {
+  // get args from command line
+  args = parser.parse_args()
+}
+if (args.debug) console.dir(args);
+
+passwd = getPass(args)
+
+// <script type="text/javascript" src="pass.js"></script>
+
+/*
+let MAX_CODE_POINT = 1114111
+let v = new Set()
+for (let j=0; j<MAX_CODE_POINT; j++) v.add(String.fromCodePoint(j))
+
+Nick Feltwell <nfeltwell@barringtonjames.com>
+
   if (args.debug) {
     print("DEBUG: getPass: passwd=" + passwd)
     print("DEBUG: getPass: passwd.length=" + passwd.length)
@@ -160,35 +227,5 @@ function getPass(args) {
     print("DEBUG: args.len=" + args.len)
     print("DEBUG: charset=" + charset)
   }
-  if (typeof window === "undefined") {
-    const CLIP = require('clipboardy');
-    CLIP.writeSync(passwd)
-  }
-  return passwd
-}
 
-// if (typeof window === 'undefined') {
-//   var parser = parse_cmd_line();
-// }
-let parser = get_parser();
-let args;
-if (typeof process.env.BUILTIN !== 'undefined' || typeof window !== 'undefined') {
-  // get args from window s
-  print(`DEBUG: env.BUILTIN= ${process.env.BUILTIN}`)
-  args = parser.parse_args([$('#hint').val(), '-v'])
-} else {
-  // get args from command line
-  args = parser.parse_args()
-}
-if (args.debug) console.dir(args);
-var passwd = getPass(args)
-if (args.verbose) {
-    print(`password >>> ${passwd} <<< (copied to clipboard)`)
-}
-// <script type="text/javascript" src="pass.js"></script>
-
-/*
-let MAX_CODE_POINT = 1114111
-let v = new Set()
-for (let j=0; j<MAX_CODE_POINT; j++) v.add(String.fromCodePoint(j))
 */
