@@ -61,7 +61,7 @@ button {
   <input id="hint" class="form-control" style="background-color:lightblue;" value='' />
 </div>
 <div class="container" style="display:flex;">
-  <label>Secret:</label>
+  <label>Sekret:</label>
   <input id="sekret" class="form-control" value='0' />
 </div>
 <div class="container" style="display:flex;">
@@ -90,6 +90,7 @@ button {
 const MP31 = 2**31 - 1;
 const assert = console.assert;
 
+/*
 function print(msg) {
   if (typeof window !== 'undefined') {
     document.write(msg + "<br>")
@@ -97,6 +98,8 @@ function print(msg) {
     console.log(msg)
   }
 }
+*/
+print = console.log
 
 /* permute chars in string using Durstenfeld shuffle algorithm */
 function shuffle_string(string, gint=rig(MP31, seed)) {
@@ -184,22 +187,22 @@ function getPass(args) {
     if (charset.length == 0) charset = CHARS.digits + CHARS.lower + CHARS.upper
   }
 
-  // let passwd;
+  let hint, passwd, salt, lower, upper, digit, prefix;
   if (args.hint === '') { // generate and return random string from charset
       passwd = get_random_string(args.len, charset)
   } else {
-      let hint = args.hint + args.sekret
+      hint = args.hint + args.sekret
       /*
       add to prefix one lower, one upper character and one digit
       to satisfy requirements of many sites
       one or more special characters can be provided in args.prefix (default='?')
       */
-      var salt = args.salt.split(',')
+      salt = args.salt.split(',')
       assert(salt.length == 5, 'salt must be 5 chars')
-      let lower = get_random_string(1, CHARS.lower,  rig(MP31, hint+salt[0]))
-      let upper = get_random_string(1, CHARS.upper,  rig(MP31, hint+salt[1]))
-      let digit = get_random_string(1, CHARS.digits, rig(MP31, hint+salt[2]))
-      const prefix = args.prefix + lower + upper + digit
+      lower = get_random_string(1, CHARS.lower,  rig(MP31, hint+salt[0]))
+      upper = get_random_string(1, CHARS.upper,  rig(MP31, hint+salt[1]))
+      digit = get_random_string(1, CHARS.digits, rig(MP31, hint+salt[2]))
+      prefix = args.prefix + lower + upper + digit
       passwd = get_random_string(args.len - prefix.length, charset, rig(MP31, hint+salt[3]))
       passwd = prefix + passwd // augment password with prefix e.g. '?aZ9'
       if (!args.no_shuffle) {
@@ -212,7 +215,6 @@ function getPass(args) {
     console.log(`password >>> ${passwd} <<< (copied to clipboard)`)
     // console.log("password >>> ", passwd, " <<< (copied to clipboard)")
   }
-  /*
   if (args.debug) {
     print("DEBUG: getPass: passwd=" + passwd)
     print("DEBUG: getPass: passwd.length=" + passwd.length)
@@ -220,15 +222,11 @@ function getPass(args) {
     print("DEBUG: args.prefix=" + args.prefix)
     print("DEBUG: prefix=" + prefix + ' (augmented)')
     print("DEBUG: prefix.length=" + prefix.length)
-    print("DEBUG: lower=" + lower)
-    print("DEBUG: upper=" + upper)
-    print("DEBUG: digit=" + digit)
+    print("DEBUG: lower= ", lower, " upper= ", upper, " digit= ", digit)
     print("DEBUG: args.sekret=" + args.sekret)
     print("DEBUG: hint=" + hint)
-    print("DEBUG: args.len=" + args.len)
     print("DEBUG: charset=" + charset)
   }
-  */
   return passwd
 }
 
@@ -275,11 +273,11 @@ $("#generate").click(function() {
   args.sekret = $('#sekret').val()
   args.prefix = $('#prefix').val()
   args.len = $('#length').val()
-  args.digits = true
+  args.digits = false
   args.unicode = false
-  args.digits = true
-  args.lower = true
-  args.upper = true
+  args.digits = false
+  args.lower = false
+  args.upper = false
   args.punctuation = false
   args.no_shuffle = false
   args.salt = '0,1,2,3,4'
