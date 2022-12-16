@@ -24,9 +24,9 @@ class ROCSScoreFunc(AbstractMolScoreFunc):
     scriptFileName= "rocs_score1.sh"
     self.scriptName= IoUtil.findFileInPyPath(scriptFileName)
     if (self.scriptName is None):
-      raise Exception, ("ROCS driver shell script: " + scriptFileName + " not found")
+      raise Exception("ROCS driver shell script: " + scriptFileName + " not found")
     else:
-      print "Located ROCS shell script: " + self.scriptName
+      print("Located ROCS shell script: " + self.scriptName)
       
     self.queueName= "blade.q"          # SGE queue to use for parallel execution
     self.maxWaitSGE= 1 * 60.0 * 60.0   # Max time to wait for results to come back from SGE queue (secs)
@@ -72,7 +72,7 @@ class ROCSScoreFunc(AbstractMolScoreFunc):
       inFile.close() 
     else:
       inFile.close() 
-      raise LookupError, ("Expected column header: " + metricHdr + " not found in file: " + inFileName)
+      raise LookupError("Expected column header: " + metricHdr + " not found in file: " + inFileName)
 
     value= float(strgValue)
     if (metricHdr == "ComboScore"):        # the ComboScore is out of 2
@@ -120,13 +120,13 @@ class ROCSScoreFunc(AbstractMolScoreFunc):
         os.remove(reportFName)
       else:
         # This should really be an exception, but to keep long runs proceeding...
-        print "Error: " + reportFName + " not found in ROCSScoreFunc.value... ignoring"
+        print("Error: " + reportFName + " not found in ROCSScoreFunc.value... ignoring")
         value= 0.0
       
     else:
-      raise OSError, ("OS Commandline failed: " + cmdLine)
+      raise OSError("OS Commandline failed: " + cmdLine)
 
-    print "Leaving ROCSScoreFunc.value(), value= " + "%5.4f" % value
+    print("Leaving ROCSScoreFunc.value(), value= " + "%5.4f" % value)
 
     return(value)
 
@@ -147,17 +147,17 @@ class ROCSScoreFunc(AbstractMolScoreFunc):
 
     resultsDict= dict()
     
-    #print "...parsing ROCS report",
+    #print("...parsing ROCS report")
     try:
       inFile= open(inFileName,'r')
     except IOError:
-      print "Error: " + inFileName + "not found in ROCSScoreFunc.parseRocsReport2... ignoring"
+      print("Error: " + inFileName + "not found in ROCSScoreFunc.parseRocsReport2... ignoring")
       return(resultsDict)
 
     # Read and process header line to locate desired column
     inLine= inFile.readline()
     hdrs= inLine.split()
-    #print "Found: " + str(len(hdrs)) + " tokens on header line"
+    #print("Found: " + str(len(hdrs)) + " tokens on header line")
     
     i= 0
     col= -1
@@ -169,7 +169,7 @@ class ROCSScoreFunc(AbstractMolScoreFunc):
 
     # If desired header found, then read top values line and pick out the desired value
     if (col > -1):
-      #print "Found metricHdr at column: " + str(col)
+      #print("Found metricHdr at column: " + str(col))
       more= True
       while (more):
         inLine= inFile.readline()
@@ -204,7 +204,7 @@ class ROCSScoreFunc(AbstractMolScoreFunc):
       inFile.close() 
       errStrg= "Expected ROCS report column header: " + metricHdr + " not found in file: " + inFileName + " in ROCSScoreFunc.parseRocsReport2()... ignoring"
       IoUtil.logErrorString(errStrg,True)
-      # raise LookupError, ("Expected ROCS report column header: " + metricHdr + " not found in file: " + inFileName)
+      # raise LookupError("Expected ROCS report column header: " + metricHdr + " not found in file: " + inFileName)
 
     return(resultsDict)    
 
@@ -223,7 +223,7 @@ class ROCSScoreFunc(AbstractMolScoreFunc):
   def valuesSingleThread(self,basicMolList):
   
     t1= time.time()
-    print "Entering ROCSScoreFunc.values()",
+    print("Entering ROCSScoreFunc.values()")
 
     # Write out smiles string for the product to a file
     baseName= IoUtil.prependCWD("swarm_tmp")
@@ -263,13 +263,13 @@ class ROCSScoreFunc(AbstractMolScoreFunc):
         resultsDict= dict()   # empty dictionary
 
     else:
-      raise OSError, ("OS Commandline failed: " + cmdLine)
+      raise OSError("OS Commandline failed: " + cmdLine)
 
 
-    print "...leaving",
+    print("...leaving")
 
     t2= time.time()
-    print str(len(basicMolList)) + " mols scored in " + str(t2-t1) + " seconds"
+    print(str(len(basicMolList)) + " mols scored in " + str(t2-t1) + " seconds")
 
     return(resultsDict)
 
@@ -315,7 +315,7 @@ class ROCSScoreFunc(AbstractMolScoreFunc):
   """
   def values(self,basicMolList):
 
-    print "Entering ROCSScoreFunc.valuesParallel()",
+    print("Entering ROCSScoreFunc.valuesParallel()")
     
     #  Include path in filenames, because qsub will run them from another machine
     baseName= IoUtil.prependCWD("swarm_tmp")
@@ -334,7 +334,7 @@ class ROCSScoreFunc(AbstractMolScoreFunc):
     """
 
     availProcessors= sgeUtils.getAvailableProcCount(self.queueName)
-    print "Found " + str(availProcessors) + " processors available in queue: " + self.queueName
+    print("Found " + str(availProcessors) + " processors available in queue: " + self.queueName)
     maxProcessorsToUse= int(0.80 * availProcessors)     # maxmimum number to run in parallel
     
     numMols= len(basicMolList)
@@ -348,7 +348,7 @@ class ROCSScoreFunc(AbstractMolScoreFunc):
       if (numChunks > maxNumChunks):
         numChunks= maxNumChunks
     
-    print "Using " + str(numChunks) + " chunks"
+    print("Using " + str(numChunks) + " chunks")
     
     # Reformat single list of mols to list of numChunks sublists
     chunkLists= self.breakIntoChunks(basicMolList,numChunks)
@@ -361,7 +361,7 @@ class ROCSScoreFunc(AbstractMolScoreFunc):
     for fName in smiNames:
       rptNames.append(fName.replace(".smi",".rpt"))
       
-    print "Submitting " + str(len(smiNames)) + " simultaneous jobs to SGE through qsub"
+    print("Submitting " + str(len(smiNames)) + " simultaneous jobs to SGE through qsub")
     workingDir= os.getcwd()
     qsubBase= "qsub -r yes -p 0 -S /bin/bash -V -q " + self.queueName + " -e " + workingDir + " -o " + workingDir
     jobNames= set()
@@ -374,14 +374,14 @@ class ROCSScoreFunc(AbstractMolScoreFunc):
       cmdTokens= cmdLine.split()
       osProcess= Popen(cmdLine,shell=True)
       
-    print "All submitted, now polling for SGE completion"
+    print("All submitted, now polling for SGE completion")
     rocsTimer= Timer()
     try:
       sgeUtils.pollQueueUntilDone(None,jobNames,self.queueName,self.maxWaitSGE)
-    except TimeoutException, ex:
+    except TimeoutException(ex):
       IoUtil.logErrorString(ex.__repr__(),True)
     else:
-      print "All SGE jobs completed in " +  str(rocsTimer.getElapsed()) + " seconds"
+      print("All SGE jobs completed in " +  str(rocsTimer.getElapsed()) + " seconds")
 
     #----
     # Okay, NOW, I need to parse all that output! 
@@ -400,7 +400,7 @@ class ROCSScoreFunc(AbstractMolScoreFunc):
       osProcess= Popen(cmdLine,shell=True)
       returnCode= osProcess.wait()
     
-    print "Parsing output files"
+    print("Parsing output files")
     allResultsDict= dict()
     for i in xrange(len(rptNames)):
       reportFName= rptNames[i]
@@ -423,7 +423,7 @@ class ROCSScoreFunc(AbstractMolScoreFunc):
         
     #self.chunkChecker(chunkLists,allResultsDict)
       
-    print "...leaving"
+    print("...leaving")
 
     return(allResultsDict)
 
@@ -440,7 +440,7 @@ def testParallelExec():
     if (os.path.isfile(templateFName)):
       app= ROCSScoreFunc(templateFName)
     else:
-      print "ERROR: file not found: " + templateFName
+      print("ERROR: file not found: " + templateFName)
       sys.exit(1)
     
     molsFName= raw_input( "SMILES test molecules infile name: " )
@@ -449,18 +449,18 @@ def testParallelExec():
       molColl= MolCollection()
       molColl.loadFromFile(inFile)
     else:
-      print "ERROR: file not found: " + molsFName
+      print("ERROR: file not found: " + molsFName)
       sys.exit(1)
 
     evalTimer= Timer()
     resultsDict= app.values(molColl.molList)
-    print "Scored " +  str(len(molColl)) + " mols in parallel in " + str(evalTimer.getElapsed()) + " seconds"
+    print("Scored " +  str(len(molColl)) + " mols in parallel in " + str(evalTimer.getElapsed()) + " seconds")
     
     for mol in molColl:
       score= resultsDict.get(mol.name)
       if (score is None):
         mol.prodScore= -1
-        print "No value returned for: " + mol.name
+        print("No value returned for: " + mol.name)
       else:
         mol.prodScore= score
 
@@ -485,21 +485,21 @@ def testParse2():
       molColl= MolCollection()
       molColl.loadFromFile(inFile)
     else:
-      print "ERROR: file not found: " + molsFName
+      print("ERROR: file not found: " + molsFName)
       sys.exit(1)
 
     rptFName= raw_input( "Matching report infile name: " )
     if (os.path.isfile(rptFName)):
       resultsDict= app.parseRocsReport2(rptFName,"ComboScore")
     else:
-      print "ERROR: file not found: " + molsFName
+      print("ERROR: file not found: " + molsFName)
       sys.exit(1)
 
     for mol in molColl:
       score= resultsDict.get(mol.name)
       if (score is None):
         mol.prodScore= -1
-        print "No value returned for: " + mol.name
+        print("No value returned for: " + mol.name)
       else:
         mol.prodScore= score
     

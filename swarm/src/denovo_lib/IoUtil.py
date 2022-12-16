@@ -49,7 +49,7 @@ class IoUtil(object):
       IoUtil.traceFile.flush()
 
     if (echoToTerm):
-      print aString
+      print(aString)
 
   logTraceString= staticmethod(logTraceString)
 
@@ -67,7 +67,7 @@ class IoUtil(object):
       IoUtil.errorFile.flush()
 
     if (echoToTerm):
-      print aString
+      print(aString)
       
   logErrorString= staticmethod(logErrorString)
 

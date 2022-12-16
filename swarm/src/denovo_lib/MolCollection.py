@@ -60,7 +60,7 @@ class MolCollection:
     if (type(ind) is int):
       return(self.molList.__getitem__(ind))
     else:
-      raise TypeError,("Invalid indexing key for MolCollection.__getitem__(): " + str(ind))
+      raise TypeError("Invalid indexing key for MolCollection.__getitem__(): " + str(ind))
 
 
   # ---------------------------------------------------------------------------
@@ -86,7 +86,7 @@ class MolCollection:
         self.molSet.add(scoredMol)
         self.molList.append(scoredMol)
     else:
-      raise TypeError,("Invalid object type passed to MolCollection.add(): " + str(type(scoredMol)))
+      raise TypeError("Invalid object type passed to MolCollection.add(): " + str(type(scoredMol)))
 
   # ---------------------------------------------------------------------------
   """
@@ -171,7 +171,7 @@ class MolCollection:
       inFile.close()
     
     print("Read in " + str(self.size()) + " molecules")
-    if errcount > 0: print "loadFromFile: ', errcount, ' errors while reading scores"
+    if errcount > 0: print("loadFromFile: ', errcount, ' errors while reading scores")
 
   # ---------------------------------------------------------------------------
   """
@@ -503,7 +503,7 @@ if __name__ == "__main__":
     else:
       basicMol= BasicMol("",smiStrg,None)
       if (basicMol in coll):
-        print "MolCollection has this molecule already"
+        print("MolCollection has this molecule already")
       else:
-        print "MolCollection does not have this molecule yet"
+        print("MolCollection does not have this molecule yet")
      

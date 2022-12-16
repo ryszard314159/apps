@@ -10,4 +10,4 @@ class AbstractMolFilter:
     @returns: True if the molecule passes the filter
   """
   def passes(self,basicMol):
-    raise NotImplementedError,"value must be defined in subclasses of AbstractMolFilter!"
+    raise NotImplementedError("value must be defined in subclasses of AbstractMolFilter!")

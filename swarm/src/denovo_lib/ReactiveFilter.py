@@ -1,6 +1,6 @@
 import sys
 
-from openeye.oechem import *
+# from openeye.oechem import *
 from AbstractMolFilter import AbstractMolFilter
 
 """
@@ -42,14 +42,14 @@ if __name__ == "__main__":
    amide_formation_smirks= "[H]O[C:1]([#6:4])=[O:2].[H][N+:3]([#6:5])=[H]>>[H][N:3]([#6:5])[C:1]([#6:4])=[O:2]"
    
    filter= ReactiveFilter()
-   print "Enter a SMILES string"
+   print("Enter a SMILES string")
    smilesString= sys.stdin.readline() 
    smilesString= smilesString.strip()
  
    if (filter.passes(smilesString)):
-     print "Molecule passes filter"
+     print("Molecule passes filter")
    else:
-     print "Molecule fails filter"
+     print("Molecule fails filter")
 
 
 '''

@@ -18,7 +18,7 @@ class AbstractDenovoOptimizer:
     thru the cmd line
   """ 
   def setup(self):
-    raise NotImplementedError,"setup must be defined in subclasses of AbstractDenovoOptimizer!"
+    raise NotImplementedError("setup must be defined in subclasses of AbstractDenovoOptimizer!")
 
   # ---------------------------------------------------------------------------
   """ 
@@ -26,4 +26,4 @@ class AbstractDenovoOptimizer:
     all, since they are scored)
   """ 
   def optimize(self):
-    raise NotImplementedError,"optimize must be defined in subclasses of AbstractDenovoOptimizer!"
+    raise NotImplementedError("optimize must be defined in subclasses of AbstractDenovoOptimizer!")

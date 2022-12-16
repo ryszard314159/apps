@@ -14,7 +14,7 @@ class AbstractMolScoreFunc:
     @returns: a score in the range [0..1] -> 1 = best
   """ 
   def value(self,basicMol):
-    raise NotImplementedError,"value must be defined in subclasses of AbstractMolScoreFunc!"
+    raise NotImplementedError("value must be defined in subclasses of AbstractMolScoreFunc!")
 
   # ---------------------------------------------------------------------------
   """ 

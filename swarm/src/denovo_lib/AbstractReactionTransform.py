@@ -18,7 +18,7 @@ class AbstractReactionTransform:
 
     pos= smirksString.find(">>")
     if (pos < 0):
-      raise Exception, "Invalid SMIRKS string in ReactionTransform.__init__(): " + smirksString
+      raise Exception("Invalid SMIRKS string in ReactionTransform.__init__(): " + smirksString)
     
     leftSide= smirksString[0:pos] 
     self.rctSmarts= leftSide.split('.')
@@ -39,7 +39,7 @@ class AbstractReactionTransform:
     @param basicMol: a BasicMol object
   """    
   def numMatchesAsReactant(self,ith,basicMol):
-    raise NotImplementedError,"numMatchesAtReactant must be defined in subclasses of AbstractReactionTransform!"
+    raise NotImplementedError("numMatchesAtReactant must be defined in subclasses of AbstractReactionTransform!")
 
   # ---------------------------------------------------------------------------
   """
@@ -85,10 +85,10 @@ if __name__ == "__main__":
         name= ""
       rxn= AbstractReactionTransform(smirks,name)
       
-      print "For rxn: " + line
-      print "Components are: "
+      print("For rxn: " + line)
+      print("Components are: ")
       for smarts in rxn.rctSmarts:
-        print "  " + smarts
+        print("  " + smarts)
 
   inFile.close()
  

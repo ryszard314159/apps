@@ -2,7 +2,7 @@
   BasicMol.py - base class, simple container class for a SMILES string and a 
   proprietary molecule object from a molecule class library (e.g. OEChem)
 """
-from openeye.oechem import OEGraphMol,OEParseSmiles,OEAddExplicitHydrogens,OECreateCanSmiString
+# from openeye.oechem import OEGraphMol,OEParseSmiles,OEAddExplicitHydrogens,OECreateCanSmiString
 
 class BasicMol(object):
 
@@ -67,7 +67,7 @@ class BasicMol(object):
     mol= OEGraphMol()
     parsedOK= OEParseSmiles(mol,self.smiStrg)
     if (parsedOK == 0):
-      raise StandardError, ("SMILES string parse error for: " + self.smiStrg + " in BasicMol.buildMolObject()")
+      raise StandardError("SMILES string parse error for: " + self.smiStrg + " in BasicMol.buildMolObject()")
 
     mol.SetTitle(self.name)  
     if (addExplicitHydrogens):

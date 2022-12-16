@@ -79,5 +79,5 @@ if __name__ == "__main__":
    acetamide.synOrigin= SyntheticOrigin([acetic_acid,ammonia],"[C:1H](=[O:2])O.[NH3]>>[C:1H](=[O:2])N")
 
    acetamide.printFull(sys.stdout)
-   print "Acetamide was made in: " + str(acetamide.numSyntheticSteps()) + " steps"
+   print("Acetamide was made in: " + str(acetamide.numSyntheticSteps()) + " steps")
    

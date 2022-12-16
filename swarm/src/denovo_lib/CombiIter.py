@@ -75,10 +75,10 @@ if __name__ == "__main__":
        more= False
      else:
        for coord in combo:
-         print str(coord) + " ",
-       print ""
+         print(str(coord) + " ")
+       print("")
        numCombos= numCombos + 1
 
-   print ""
-   print"Total Combinations: " + str(numCombos)
+   print("")
+   print("Total Combinations: " + str(numCombos))
   

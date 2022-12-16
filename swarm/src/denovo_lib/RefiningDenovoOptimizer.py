@@ -1,7 +1,7 @@
 import sys
 import random
 
-from openeye.oechem import *
+# from openeye.oechem import *
 
 from AbstractDenovoOptimizer import AbstractDenovoOptimizer
 from BasicMol import BasicMol
@@ -79,7 +79,7 @@ class RefiningDenovoOptimizer(AbstractDenovoOptimizer):
     #Use defaults for parameters
 
     if opts['debug']:
-      print 'opts =', opts
+      print('opts =', opts)
     if opts['template'] != None:
       self.templateMolFName = opts['template']
     else:
@@ -92,7 +92,7 @@ class RefiningDenovoOptimizer(AbstractDenovoOptimizer):
       smiStrg= OECreateCanSmiString(mol)
       self.templateMol= BasicMol("template",smiStrg,mol)
     else:
-      raise Exception, "Error parsing template molecule in file: " + self.templateMolFName      
+      raise Exception("Error parsing template molecule in file: " + self.templateMolFName)  
 
     if opts['scoreName'] != None:
       self.scoreName = opts['scoreName']
@@ -158,7 +158,7 @@ class RefiningDenovoOptimizer(AbstractDenovoOptimizer):
       # Slow ROCS based 3D method
       self.molScoringFunc= ROCSScoreFunc(self.templateMolFName)
     else:
-      raise Exception, ('unknown scoring function:' + self.scoreName)
+      raise Exception('unknown scoring function:' + self.scoreName)
 
     '''
     # TBD: maybe we can use eval? or something similar to avoid long if/then/elif sequence...
@@ -535,7 +535,7 @@ class RefiningDenovoOptimizer(AbstractDenovoOptimizer):
                 products.append(newSynMol)
                 noProducts= False
               except StandardError:
-                print "Invalid smiles string for product: " + smiStrg + " ignoring..."
+                print("Invalid smiles string for product: " + smiStrg + " ignoring...")
         
         if (noProducts):
           numFruitless= numFruitless + 1          

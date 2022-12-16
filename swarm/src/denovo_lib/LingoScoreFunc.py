@@ -1,6 +1,6 @@
 import os.path
  
-from openeye.oechem import *
+# from openeye.oechem import *
 
 from BasicMol import BasicMol
 from AbstractMolScoreFunc import AbstractMolScoreFunc
@@ -26,7 +26,7 @@ class LingoScoreFunc(AbstractMolScoreFunc):
     self.comparator= None
     
     if (not (os.path.isfile(templateMolFName))):
-      raise Exception, ("Error, template molecule file: " + templateMolFName + " not found in LingoScoreFunc.__init__()")
+      raise Exception("Error, template molecule file: " + templateMolFName + " not found in LingoScoreFunc.__init__()")
       
     inStream= oemolistream(templateMolFName)
     mol= OEGraphMol()    
@@ -38,7 +38,7 @@ class LingoScoreFunc(AbstractMolScoreFunc):
       
       self.templateMol.buildMolObject(True)
     else:
-      raise Exception, ("Error parsing template molecule in file: " + templateMolFName)
+      raise Exception("Error parsing template molecule in file: " + templateMolFName)
 
     # Based on canonical SMILES string
     #self.comparator= OELingoSim(smiStrg)

@@ -3,7 +3,7 @@
 """
 
 from AbstractReactionTransform import AbstractReactionTransform
-from openeye.oechem import *
+# from openeye.oechem import *
 
 from BasicMol import BasicMol
 from MolCollection import MolCollection
@@ -68,7 +68,7 @@ def keyboardTest():
    smirksString= raw_input( "Enter a SMIRKS string: " )
    tfm= ReactionTransformOE(smirksString)
  
-   print "This reaction has " + str(tfm.getNumReactants()) + " reactants"
+   print("This reaction has " + str(tfm.getNumReactants()) + " reactants")
 
    moreInput= True
    while (moreInput):
@@ -80,7 +80,7 @@ def keyboardTest():
    
        for i in xrange(tfm.getNumReactants()):
          num= tfm.numMatchesAsReactant(i,mol)
-         print "Molecule matched reactant " + str(i) + ", " + str(num) + " times"
+         print("Molecule matched reactant " + str(i) + ", " + str(num) + " times")
      else:
        moreInput= False
 
@@ -116,7 +116,7 @@ def fileTest():
     inLines= getLinesFile(fName,True)
     tfm= ReactionTransformOE(inLines[0])
  
-    print "This reaction has " + str(tfm.getNumReactants()) + " reactants"
+    print("This reaction has " + str(tfm.getNumReactants()) + " reactants")
 
     fName= raw_input( "Enter infile with SMILES strings: ")
     inLines= getLinesFile(fName,True)
@@ -144,8 +144,8 @@ def fileTest():
 
 
 
-    print "Molecules not matching anything written to: nomatch.smi"
-    print "Molecules matching I-th reactant written to matchedI.smi (e.g. matched0.smi)"
+    print("Molecules not matching anything written to: nomatch.smi")
+    print("Molecules matching I-th reactant written to matchedI.smi (e.g. matched0.smi)")
 
 #==============================================================================
 """ Test using file input of molecules and reactions, and file output of matching
@@ -157,7 +157,7 @@ def fileTest2():
     inLines= getLinesFile(fName,True)
     rxn= ReactionTransformOE(inLines[0])
  
-    print "This reaction has " + str(rxn.getNumReactants()) + " reactants"
+    print("This reaction has " + str(rxn.getNumReactants()) + " reactants")
 
     fName= raw_input( "Enter infile with SMILES strings: ")
     inLines= getLinesFile(fName,True)
@@ -212,8 +212,8 @@ def fileTest2():
       prodFile.write(smiStrg + "\n")
 
 
-    print "Molecules not matching anything written to: nomatch.smi"    
-    print "Molecules matching I-th reactant written to matchedI.smi (e.g. matched0.smi)"
+    print("Molecules not matching anything written to: nomatch.smi")   
+    print("Molecules matching I-th reactant written to matchedI.smi (e.g. matched0.smi)")
 
 #==============================================================================
 # Test Driver code

@@ -1,6 +1,6 @@
 import sys
 
-from openeye.oechem import *
+# from openeye.oechem import *
 from AbstractMolFilter import AbstractMolFilter
 
 """
@@ -99,14 +99,14 @@ class BasicFilter(AbstractMolFilter):
 if __name__ == "__main__":
    
    filter= BasicFilter()
-   print "Enter a SMILES string"
+   print("Enter a SMILES string")
    smilesString= sys.stdin.readline() 
    smilesString= smilesString.strip()
  
    if (filter.passes(smilesString)):
-     print "Molecule passes filter"
+     print("Molecule passes filter")
    else:
-     print "Molecule fails filter"
+     print("Molecule fails filter")
 
 
 '''

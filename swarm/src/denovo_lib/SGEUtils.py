@@ -118,10 +118,10 @@ class SGEUtils:
     
     foundCount= 1
     sleepTime= 3.0  # seconds between polling
-    print "Count of qstat jobs found is: ",
+    print("Count of qstat jobs found is: ")
     while (waitTimer.getElapsed() < maxWait and foundCount > 0):
       foundCount= self.pollQueue(userName,jobNames,queueName)
-      print " " + str(foundCount),
+      print(" " + str(foundCount)) # ,
 
       if (foundCount == 0):
         break
@@ -131,7 +131,7 @@ class SGEUtils:
     if (foundCount > 0):
       raise TimeoutException("Exceeded wait time of " + str(maxWait) + " seconds for Sun Grid Engine in SGEUtils.pollQueueUntilDone()")
     else:
-      print " SGE jobs finished in " + str(waitTimer.getElapsed()) + " seconds"
+      print(" SGE jobs finished in " + str(waitTimer.getElapsed()) + " seconds")
 
 
 #==============================================================================
@@ -141,7 +141,7 @@ if __name__ == "__main__":
   queueName= "blade.q"
 
   avail= app.getAvailableProcCount(queueName)
-  print "Found " + str(avail) + " processors available on the SGE in the " + queueName + " queue"
+  print("Found " + str(avail) + " processors available on the SGE in the " + queueName + " queue")
 
   app.pollQueueUntilDone(None,None,queueName,30.0)  
   

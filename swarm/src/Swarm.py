@@ -3,7 +3,7 @@
 import sys
 import random
 
-from openeye.oechem import *
+# from openeye.oechem import *
 
 from denovo_lib.MolCollection import MolCollection
 from denovo_lib.ScoredMol import ScoredMol
@@ -139,7 +139,7 @@ class Swarm:
     finalCollection.reverse()
     
     # Now write them out    
-    print "Done structural exploration, writing out returned scores"
+    print("Done structural exploration, writing out returned scores")
 
     #finalCollection.writeToFile(file("swarm_brief_lingo.out",'w'),True)
     #finalCollection.writeToFile(file("swarm_full_lingo.out",'w'),False)
@@ -167,7 +167,7 @@ class Swarm:
 def usage():
       """
       swarmp.py -h|--help              # print this help
-                -r|--reagents smiles   # file with reagents; default=None
+                -r|--reactants smiles  # file with reactants; default=None
                 -x|--transforms smirks # file with reactions; default=None
                 -s|--score scoreName   # score name: Lingo|ROCS; default=Lingo
                 --seed                 # seed for random number generator; default=None (i.e. initialized from the clock)
@@ -189,7 +189,7 @@ if __name__ == "__main__":
            'prefix': 'ISS', 'seed': None}
    for o, a in clopts:
      if o in ['-h', '--help']:
-       print usage.__doc__
+       print(usage.__doc__)
        sys.exit(1)
      elif o in ['-d', '--debug']:
        opts['debug'] = 1
